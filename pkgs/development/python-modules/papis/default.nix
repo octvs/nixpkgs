@@ -1,7 +1,7 @@
 {
   lib,
   stdenv,
-  arxiv2bib,
+  arxiv,
   beautifulsoup4,
   bibtexparser,
   buildPythonPackage,
@@ -9,12 +9,16 @@
   click,
   colorama,
   configparser,
+  docutils,
   dominate,
   fetchFromGitHub,
   filetype,
+  git,
   habanero,
+  hatchling,
   isbnlib,
   lxml,
+  platformdirs,
   prompt-toolkit,
   pygments,
   pyparsing,
@@ -24,28 +28,32 @@
   pythonOlder,
   pyyaml,
   requests,
+  sphinx,
+  sphinx-click,
   stevedore,
-  tqdm,
   typing-extensions,
   whoosh,
 }:
-
 buildPythonPackage rec {
   pname = "papis";
-  version = "0.13";
-  format = "setuptools";
+  version = "0.14";
+  pyproject = true;
 
-  disabled = pythonOlder "3.7";
+  disabled = pythonOlder "3.8";
 
   src = fetchFromGitHub {
     owner = "papis";
     repo = pname;
     rev = "refs/tags/v${version}";
-    hash = "sha256-iRrf37hq+9D01JRaQIqg7yTPbLX6I0ZGnzG3r1DX464=";
+    hash = "sha256-UpZoMYk4URN8tSFGIynVzWMk+9S0izROAgbx6uI2cN8=";
   };
 
+  build-system = [ hatchling ];
+
   propagatedBuildInputs = [
-    arxiv2bib
+    docutils
+    arxiv
+    platformdirs
     beautifulsoup4
     bibtexparser
     chardet
@@ -65,17 +73,21 @@ buildPythonPackage rec {
     pyyaml
     requests
     stevedore
-    tqdm
     typing-extensions
     whoosh
+    sphinx
+    sphinx-click
   ];
 
   postPatch = ''
-    substituteInPlace setup.cfg \
+    substituteInPlace pyproject.toml \
       --replace "--cov=papis" ""
   '';
 
-  nativeCheckInputs = [ pytestCheckHook ];
+  nativeCheckInputs = [
+    pytestCheckHook
+    git
+  ];
 
   preCheck = ''
     export HOME=$(mktemp -d);
@@ -104,13 +116,13 @@ buildPythonPackage rec {
 
   pythonImportsCheck = [ "papis" ];
 
-  meta = with lib; {
+  meta = {
     description = "Powerful command-line document and bibliography manager";
     mainProgram = "papis";
     homepage = "https://papis.readthedocs.io/";
     changelog = "https://github.com/papis/papis/blob/v${version}/CHANGELOG.md";
-    license = licenses.gpl3Only;
-    maintainers = with maintainers; [
+    license = lib.licenses.gpl3Only;
+    maintainers = with lib.maintainers; [
       nico202
       teto
     ];
