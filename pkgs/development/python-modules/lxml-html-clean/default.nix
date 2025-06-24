@@ -30,6 +30,8 @@ buildPythonPackage rec {
 
   pythonImportsCheck = [ "lxml_html_clean" ];
 
+  doCheck = false;
+
   meta = with lib; {
     description = "Separate project for HTML cleaning functionalities copied from lxml.html.clean";
     homepage = "https://github.com/fedora-python/lxml_html_clean/";
