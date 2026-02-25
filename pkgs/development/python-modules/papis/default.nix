@@ -35,7 +35,7 @@
   whoosh,
 
   # switch for optional dependencies
-  withOptDeps ? false,
+  withOptDeps ? true,
 
   # tests
   docutils,
