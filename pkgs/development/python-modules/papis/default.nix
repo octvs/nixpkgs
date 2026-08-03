@@ -2,7 +2,6 @@
   lib,
   buildPythonPackage,
   fetchFromGitHub,
-  fetchpatch2,
 
   # build-system
   hatchling,
@@ -48,14 +47,14 @@
 
 buildPythonPackage (finalAttrs: {
   pname = "papis";
-  version = "0.15.0";
+  version = "0.15.0-unstable-2026-03-01";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "papis";
     repo = "papis";
-    tag = "v${finalAttrs.version}";
-    hash = "sha256-G+ryUMBUEbGxUG+u2YwZbT04IAzOmajtIPXP12MaXsY=";
+    rev = "44c6463f79cbc3a09adb541ae7df4e00a194b86b";
+    hash = "sha256-GSVBdF61mVXhbi1W0ggjfQD2S2caHk9wqD65NmLdfuQ=";
   };
 
   build-system = [ hatchling ];
@@ -122,30 +121,12 @@ buildPythonPackage (finalAttrs: {
     "test_csl_style_download"
   ];
 
-  # Until a release >0.15.0 (that would already contain these commits)
-  patches = [
-    # Commit 44c6463: chore: move isbnlib to optional dependencies
-    (fetchpatch2 {
-      url = "https://github.com/papis/papis/commit/44c6463f79cbc3a09adb541ae7df4e00a194b86b.patch?full_index=1";
-      hash = "sha256-3E18cyzkiZsNvgH/X8dZu+3tGGpbBsaQ3nIoDuIYFqw=";
-    })
-    # Commit 7518e53: chore: remove isbn dependency
-    (fetchpatch2 {
-      url = "https://github.com/papis/papis/commit/7518e53e5d485e3cec1e202af6cb4921b9976b5b.patch?full_index=1";
-      hash = "sha256-iBqlvHfH+6fyhi2C7lpwI1O59DKrKp7p45x29kzPRR0=";
-    })
-    # Commit 15cae59: test: skip tests if missing isbnlib
-    (fetchpatch2 {
-      url = "https://github.com/papis/papis/commit/15cae5986ae9dec75c7d103757adbd73c39feb89.patch?full_index=1";
-      hash = "sha256-kuVZdOd+H99TinM7yAs7NJrfw7rOPyxDlSaT0P2NeC4=";
-    })
-  ];
-
   meta = {
     description = "Powerful command-line document and bibliography manager";
     mainProgram = "papis";
     homepage = "https://papis.readthedocs.io/";
-    changelog = "https://github.com/papis/papis/blob/${finalAttrs.src.tag}/CHANGELOG.md";
+    # Uncomment on next release (>v0.15.0) when src.tag is defined again
+    # changelog = "https://github.com/papis/papis/blob/${finalAttrs.src.tag}/CHANGELOG.md";
     license = lib.licenses.gpl3Only;
     maintainers = with lib.maintainers; [
       nico202
